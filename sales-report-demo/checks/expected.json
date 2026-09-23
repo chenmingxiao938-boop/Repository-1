@@ -1,0 +1,520 @@
+{
+  "schema_version": 1,
+  "period_start": "2010-12-01",
+  "period_end": "2010-12-05",
+  "currency": "GBP",
+  "required_columns": [
+    "line_id",
+    "order_id",
+    "order_date",
+    "sku",
+    "quantity",
+    "unit_price",
+    "currency"
+  ],
+  "normal_batch": {
+    "files": [
+      "samples/valid/orders_2010-12-01.csv",
+      "samples/valid/orders_2010-12-02.csv",
+      "samples/valid/orders_2010-12-03.csv",
+      "samples/valid/orders_2010-12-05.csv"
+    ],
+    "rows": 84,
+    "quantity": 1503,
+    "total_pence": 420125,
+    "unique_skus": 65,
+    "daily": {
+      "2010-12-01": {
+        "rows": 20,
+        "quantity": 131,
+        "pence": 40825
+      },
+      "2010-12-02": {
+        "rows": 20,
+        "quantity": 206,
+        "pence": 63012
+      },
+      "2010-12-03": {
+        "rows": 22,
+        "quantity": 750,
+        "pence": 161518
+      },
+      "2010-12-05": {
+        "rows": 22,
+        "quantity": 416,
+        "pence": 154770
+      }
+    },
+    "by_sku": {
+      "20682": {
+        "rows": 1,
+        "quantity": 24,
+        "pence": 7800
+      },
+      "20749": {
+        "rows": 2,
+        "quantity": 24,
+        "pence": 17160
+      },
+      "20956": {
+        "rows": 1,
+        "quantity": 12,
+        "pence": 1500
+      },
+      "21034": {
+        "rows": 1,
+        "quantity": 2,
+        "pence": 190
+      },
+      "21056": {
+        "rows": 1,
+        "quantity": 8,
+        "pence": 7160
+      },
+      "21231": {
+        "rows": 1,
+        "quantity": 24,
+        "pence": 3000
+      },
+      "21232": {
+        "rows": 1,
+        "quantity": 24,
+        "pence": 3000
+      },
+      "21421": {
+        "rows": 1,
+        "quantity": 12,
+        "pence": 1500
+      },
+      "21422": {
+        "rows": 1,
+        "quantity": 16,
+        "pence": 1360
+      },
+      "21485": {
+        "rows": 2,
+        "quantity": 12,
+        "pence": 5940
+      },
+      "21523": {
+        "rows": 1,
+        "quantity": 10,
+        "pence": 6750
+      },
+      "21524": {
+        "rows": 1,
+        "quantity": 3,
+        "pence": 2385
+      },
+      "21730": {
+        "rows": 1,
+        "quantity": 6,
+        "pence": 2550
+      },
+      "21754": {
+        "rows": 2,
+        "quantity": 6,
+        "pence": 3570
+      },
+      "21755": {
+        "rows": 2,
+        "quantity": 6,
+        "pence": 3570
+      },
+      "21777": {
+        "rows": 1,
+        "quantity": 4,
+        "pence": 3180
+      },
+      "21807": {
+        "rows": 1,
+        "quantity": 36,
+        "pence": 1512
+      },
+      "21928": {
+        "rows": 1,
+        "quantity": 100,
+        "pence": 16500
+      },
+      "21930": {
+        "rows": 1,
+        "quantity": 100,
+        "pence": 16500
+      },
+      "22065": {
+        "rows": 1,
+        "quantity": 24,
+        "pence": 3480
+      },
+      "22067": {
+        "rows": 1,
+        "quantity": 24,
+        "pence": 3960
+      },
+      "22083": {
+        "rows": 1,
+        "quantity": 10,
+        "pence": 2950
+      },
+      "22086": {
+        "rows": 1,
+        "quantity": 80,
+        "pence": 20400
+      },
+      "22111": {
+        "rows": 1,
+        "quantity": 36,
+        "pence": 17820
+      },
+      "22114": {
+        "rows": 1,
+        "quantity": 8,
+        "pence": 3160
+      },
+      "22128": {
+        "rows": 1,
+        "quantity": 60,
+        "pence": 7500
+      },
+      "22155": {
+        "rows": 1,
+        "quantity": 48,
+        "pence": 2016
+      },
+      "22158": {
+        "rows": 1,
+        "quantity": 8,
+        "pence": 2360
+      },
+      "22161": {
+        "rows": 1,
+        "quantity": 24,
+        "pence": 1560
+      },
+      "22178": {
+        "rows": 1,
+        "quantity": 24,
+        "pence": 3000
+      },
+      "22310": {
+        "rows": 1,
+        "quantity": 6,
+        "pence": 990
+      },
+      "22411": {
+        "rows": 1,
+        "quantity": 6,
+        "pence": 990
+      },
+      "22423": {
+        "rows": 2,
+        "quantity": 64,
+        "pence": 70080
+      },
+      "22617": {
+        "rows": 1,
+        "quantity": 24,
+        "pence": 10200
+      },
+      "22622": {
+        "rows": 1,
+        "quantity": 2,
+        "pence": 1990
+      },
+      "22623": {
+        "rows": 1,
+        "quantity": 3,
+        "pence": 1485
+      },
+      "22632": {
+        "rows": 1,
+        "quantity": 6,
+        "pence": 1110
+      },
+      "22633": {
+        "rows": 2,
+        "quantity": 30,
+        "pence": 6150
+      },
+      "22726": {
+        "rows": 1,
+        "quantity": 12,
+        "pence": 4500
+      },
+      "22727": {
+        "rows": 2,
+        "quantity": 52,
+        "pence": 19500
+      },
+      "22728": {
+        "rows": 1,
+        "quantity": 39,
+        "pence": 14625
+      },
+      "22730": {
+        "rows": 1,
+        "quantity": 19,
+        "pence": 7125
+      },
+      "22745": {
+        "rows": 1,
+        "quantity": 6,
+        "pence": 1260
+      },
+      "22748": {
+        "rows": 1,
+        "quantity": 6,
+        "pence": 1260
+      },
+      "22749": {
+        "rows": 1,
+        "quantity": 8,
+        "pence": 3000
+      },
+      "22752": {
+        "rows": 2,
+        "quantity": 4,
+        "pence": 3060
+      },
+      "22835": {
+        "rows": 1,
+        "quantity": 3,
+        "pence": 1395
+      },
+      "22910": {
+        "rows": 1,
+        "quantity": 80,
+        "pence": 20400
+      },
+      "22968": {
+        "rows": 1,
+        "quantity": 8,
+        "pence": 6800
+      },
+      "22988": {
+        "rows": 1,
+        "quantity": 12,
+        "pence": 1500
+      },
+      "71053": {
+        "rows": 2,
+        "quantity": 12,
+        "pence": 4068
+      },
+      "82482": {
+        "rows": 1,
+        "quantity": 6,
+        "pence": 1260
+      },
+      "82483": {
+        "rows": 1,
+        "quantity": 4,
+        "pence": 1980
+      },
+      "82486": {
+        "rows": 1,
+        "quantity": 2,
+        "pence": 1390
+      },
+      "84347": {
+        "rows": 1,
+        "quantity": 6,
+        "pence": 1530
+      },
+      "84879": {
+        "rows": 1,
+        "quantity": 32,
+        "pence": 5408
+      },
+      "84945": {
+        "rows": 1,
+        "quantity": 36,
+        "pence": 3060
+      },
+      "84949": {
+        "rows": 1,
+        "quantity": 144,
+        "pence": 20880
+      },
+      "84969": {
+        "rows": 1,
+        "quantity": 6,
+        "pence": 2550
+      },
+      "85123A": {
+        "rows": 6,
+        "quantity": 23,
+        "pence": 6305
+      },
+      "84406B": {
+        "rows": 1,
+        "quantity": 8,
+        "pence": 2200
+      },
+      "84029G": {
+        "rows": 3,
+        "quantity": 18,
+        "pence": 6318
+      },
+      "84029E": {
+        "rows": 3,
+        "quantity": 18,
+        "pence": 6318
+      },
+      "82494L": {
+        "rows": 2,
+        "quantity": 12,
+        "pence": 3300
+      },
+      "72800E": {
+        "rows": 1,
+        "quantity": 11,
+        "pence": 2805
+      }
+    }
+  },
+  "reference": {
+    "files": [
+      "samples/reference/stage1_8_rows.csv"
+    ],
+    "rows": 8,
+    "quantity": 35,
+    "total_pence": 10373,
+    "do_not_combine_with_normal_batch": true
+  },
+  "positive_synthetic_control": {
+    "files": [
+      "samples/synthetic-valid/synthetic_leading_zero_and_zero_price.csv"
+    ],
+    "rows": 2,
+    "quantity": 3,
+    "total_pence": 900,
+    "expected_sku": "000101"
+  },
+  "negative_cases": [
+    {
+      "id": "missing_price",
+      "data_kind": "synthetic",
+      "files": [
+        "samples/invalid/missing_price/synthetic_missing_price.csv"
+      ],
+      "expected": "reject_entire_batch",
+      "expected_issues": [
+        {
+          "file": "samples/invalid/missing_price/synthetic_missing_price.csv",
+          "line": 2,
+          "field": "unit_price",
+          "reason": "MISSING_VALUE"
+        }
+      ],
+      "reports_expected": 0
+    },
+    {
+      "id": "invalid_date",
+      "data_kind": "synthetic",
+      "files": [
+        "samples/invalid/invalid_date/synthetic_invalid_date.csv"
+      ],
+      "expected": "reject_entire_batch",
+      "expected_issues": [
+        {
+          "file": "samples/invalid/invalid_date/synthetic_invalid_date.csv",
+          "line": 2,
+          "field": "order_date",
+          "reason": "INVALID_DATE"
+        }
+      ],
+      "reports_expected": 0
+    },
+    {
+      "id": "invalid_quantity",
+      "data_kind": "synthetic",
+      "files": [
+        "samples/invalid/invalid_quantity/synthetic_invalid_quantity.csv"
+      ],
+      "expected": "reject_entire_batch",
+      "expected_issues": [
+        {
+          "file": "samples/invalid/invalid_quantity/synthetic_invalid_quantity.csv",
+          "line": 2,
+          "field": "quantity",
+          "reason": "INVALID_QUANTITY"
+        }
+      ],
+      "reports_expected": 0
+    },
+    {
+      "id": "duplicate_id",
+      "data_kind": "synthetic",
+      "files": [
+        "samples/invalid/duplicate_id/synthetic_duplicate_a.csv",
+        "samples/invalid/duplicate_id/synthetic_duplicate_b.csv"
+      ],
+      "expected": "reject_entire_batch",
+      "expected_issues": [
+        {
+          "file": "samples/invalid/duplicate_id/synthetic_duplicate_b.csv",
+          "line": 2,
+          "field": "line_id",
+          "reason": "DUPLICATE_LINE_ID",
+          "first_occurrence": {
+            "file": "samples/invalid/duplicate_id/synthetic_duplicate_a.csv",
+            "line": 2
+          }
+        }
+      ],
+      "reports_expected": 0
+    },
+    {
+      "id": "cancelled_invoice",
+      "data_kind": "synthetic",
+      "files": [
+        "samples/invalid/cancelled_invoice/synthetic_cancelled_invoice.csv"
+      ],
+      "expected": "reject_entire_batch",
+      "expected_issues": [
+        {
+          "file": "samples/invalid/cancelled_invoice/synthetic_cancelled_invoice.csv",
+          "line": 2,
+          "field": "order_id",
+          "reason": "CANCELLED_INVOICE"
+        }
+      ],
+      "reports_expected": 0
+    },
+    {
+      "id": "wrong_currency",
+      "data_kind": "synthetic",
+      "files": [
+        "samples/invalid/wrong_currency/synthetic_wrong_currency.csv"
+      ],
+      "expected": "reject_entire_batch",
+      "expected_issues": [
+        {
+          "file": "samples/invalid/wrong_currency/synthetic_wrong_currency.csv",
+          "line": 2,
+          "field": "currency",
+          "reason": "UNSUPPORTED_CURRENCY"
+        }
+      ],
+      "reports_expected": 0
+    },
+    {
+      "id": "out_of_period",
+      "data_kind": "synthetic",
+      "files": [
+        "samples/invalid/out_of_period/synthetic_out_of_period.csv"
+      ],
+      "expected": "reject_entire_batch",
+      "expected_issues": [
+        {
+          "file": "samples/invalid/out_of_period/synthetic_out_of_period.csv",
+          "line": 2,
+          "field": "order_date",
+          "reason": "OUT_OF_PERIOD"
+        }
+      ],
+      "reports_expected": 0
+    }
+  ]
+}

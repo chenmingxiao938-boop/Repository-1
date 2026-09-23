@@ -1,0 +1,5 @@
+__pycache__/
+work/
+.venv/
+*.inspect.ndjson
+videos/**/.thumbnails/

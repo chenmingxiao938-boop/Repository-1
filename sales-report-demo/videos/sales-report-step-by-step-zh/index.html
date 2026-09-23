@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1920, height=1080">
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 1920px; height: 1080px; overflow: hidden; background: #081526; }
+      #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; background: #081526; }
+      .scene-host { position: absolute; inset: 0; width: 1920px; height: 1080px; overflow: hidden; }
+    </style>
+  </head>
+  <body>
+    <div data-hf-id="hf-utmj" id="root" data-composition-id="sales-report-step-by-step-zh" data-start="0" data-duration="81.5" data-width="1920" data-height="1080">
+      <div data-hf-id="hf-gp6k" id="host-1" class="clip scene-host" data-composition-id="scene-01" data-composition-src="compositions/scene-01.html" data-start="0" data-duration="14" data-track-index="0"></div>
+      <div data-hf-id="hf-zeux" id="host-2" class="clip scene-host" data-composition-id="scene-02" data-composition-src="compositions/scene-02.html" data-start="13.5" data-duration="14" data-track-index="1"></div>
+      <div data-hf-id="hf-q24l" id="host-3" class="clip scene-host" data-composition-id="scene-03" data-composition-src="compositions/scene-03.html" data-start="27" data-duration="14" data-track-index="0"></div>
+      <div data-hf-id="hf-kr3b" id="host-4" class="clip scene-host" data-composition-id="scene-04" data-composition-src="compositions/scene-04.html" data-start="40.5" data-duration="14" data-track-index="1"></div>
+      <div data-hf-id="hf-olyx" id="host-5" class="clip scene-host" data-composition-id="scene-05" data-composition-src="compositions/scene-05.html" data-start="54" data-duration="14" data-track-index="0"></div>
+      <div data-hf-id="hf-d296" id="host-6" class="clip scene-host" data-composition-id="scene-06" data-composition-src="compositions/scene-06.html" data-start="67.5" data-duration="14" data-track-index="1"></div>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      [13.5, 27, 40.5, 54, 67.5].forEach((time, i) => {
+        const oldHost = `#host-${i + 1}`;
+        const newHost = `#host-${i + 2}`;
+        tl.to(oldHost, { opacity: 0, duration: 0.5, ease: "power2.inOut" }, time);
+        tl.fromTo(newHost, { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.inOut" }, time);
+      });
+      window.__timelines["sales-report-step-by-step-zh"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>

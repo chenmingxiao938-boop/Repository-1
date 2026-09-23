@@ -1,0 +1,14 @@
+{
+  "files": [
+    "samples/unseen/unseen_public_2010-12-01_to_2010-12-05.csv"
+  ],
+  "rows": 8,
+  "quantity": 129,
+  "total_pence": 37455,
+  "daily": {
+    "2010-12-01": {"rows": 2, "quantity": 6, "pence": 2970},
+    "2010-12-02": {"rows": 2, "quantity": 12, "pence": 2220},
+    "2010-12-03": {"rows": 2, "quantity": 104, "pence": 29640},
+    "2010-12-05": {"rows": 2, "quantity": 7, "pence": 2625}
+  }
+}

@@ -1,0 +1,2 @@
+line_id,order_id,order_date,sku,quantity,unit_price,currency
+SYN-001,SYN-ORDER-001,2010-12-32,000101,2,4.50,GBP
