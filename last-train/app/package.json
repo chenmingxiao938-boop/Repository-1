@@ -1,0 +1,22 @@
+{
+  "name": "last-train",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "start": "node src/server.mjs",
+    "share": "node src/share.mjs",
+    "test": "node --test test/*.test.mjs",
+    "check": "node --check src/server.mjs && node --check src/game.mjs && node --check public/app.js && node --check public/i18n.js && node --check public/voice.js",
+    "test:browser": "node test/play.browser.mjs"
+  },
+  "dependencies": {
+    "ws": "8.22.0"
+  },
+  "devDependencies": {
+    "playwright": "1.63.0"
+  }
+}

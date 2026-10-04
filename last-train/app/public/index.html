@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#121c20" />
+    <title>Last Train · Online Preview</title>
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <header class="masthead">
+      <a class="brand" href="/">最后一班 <small>LAST TRAIN</small></a
+      ><span class="edition">联机试验 / 搜索 v0.2</span
+      ><label class="language-picker" for="language"
+        ><span>语言</span
+        ><select id="language" aria-label="界面语言">
+          <option value="zh">中文</option>
+          <option value="en" selected>English</option>
+        </select></label
+      ><button id="rules-open" class="quiet">乘车须知</button>
+    </header>
+    <div id="connection" class="connection" role="status">正在连接列车…</div>
+    <div id="error" class="error" role="alert" hidden></div>
+    <main>
+      <section id="entry" class="entry">
+        <div class="intro">
+          <p class="eyebrow">末日之后 · 仅此一班</p>
+          <h1>下一站，<br />有人回不了家。</h1>
+          <p>6–8 人，四轮旅程。搜集物资，隐瞒身份，决定谁能一起抵达终点。</p>
+          <div class="ticket-stub">单程车票 <span>NO RETURN</span></div>
+        </div>
+        <div class="panel boarding">
+          <p class="eyebrow">准备登车</p>
+          <h2>你的旅程从这里开始</h2>
+          <label
+            >乘客姓名<input
+              id="name"
+              maxlength="20"
+              autocomplete="nickname"
+              placeholder="其他乘客会看到这个名字" /></label
+          ><button id="create" disabled>创建房间</button>
+          <div class="divider">或凭房间号登车</div>
+          <label
+            >房间号<input
+              id="code"
+              maxlength="12"
+              autocomplete="off"
+              autocapitalize="characters"
+              placeholder="输入房间号" /></label
+          ><button id="join" class="secondary" disabled>加入房间</button>
+          <p class="hint">
+            身份保存在当前标签页；刷新后可重连。请保留这个标签页。
+          </p>
+        </div>
+      </section>
+      <section id="game" hidden>
+        <div class="journey">
+          <div>
+            <p class="eyebrow" id="room"></p>
+            <h1 id="phase"></h1>
+          </div>
+          <div class="clock">
+            <span id="round"></span><strong id="timer">--:--</strong>
+          </div>
+          <button id="invite" class="quiet">复制邀请链接</button>
+        </div>
+        <div id="resources" class="resources"></div>
+        <nav class="tabs" aria-label="书页">
+          <button data-page="action" aria-selected="true">当前行动</button
+          ><button data-page="skill" aria-selected="false">职业技能</button
+          ><button data-page="book" aria-selected="false">我的书页</button
+          ><button data-page="public" aria-selected="false">车厢与广播</button>
+        </nav>
+        <div class="spread">
+          <section id="page-action" class="page">
+            <p class="eyebrow">此时此地</p>
+            <h2>你要如何选择？</h2>
+            <div id="actions"></div>
+            <div id="result" hidden></div>
+          </section>
+          <section id="page-skill" class="page" hidden>
+            <p class="eyebrow">仅你可见 / PRIVATE</p>
+            <h2>职业技能</h2>
+            <p id="skill-description" class="hint"></p>
+            <div id="skills"></div>
+          </section>
+          <section id="page-book" class="page" hidden>
+            <p class="eyebrow">仅你可见 / PRIVATE</p>
+            <h2>旅人的秘密</h2>
+            <div id="identity"></div>
+            <h3>随身物品</h3>
+            <div id="bag"></div>
+            <h3>私人任务</h3>
+            <div id="tasks"></div>
+            <h3>个人记录与证据</h3>
+            <div id="notes"></div>
+          </section>
+          <section id="page-public" class="page" hidden>
+            <p class="eyebrow">公开车厢 / PUBLIC</p>
+            <h2>同行者</h2>
+            <div id="players"></div>
+            <h3>公共广播</h3>
+            <div id="log" class="records"></div>
+            <h3>当前频道聊天</h3>
+            <div id="chat" class="records"></div>
+            <div id="chat-compose"></div>
+          </section>
+          <aside class="rail">
+            <p class="eyebrow">列车频道</p>
+            <h3>听见彼此</h3>
+            <p class="hint">语音随分组切换。首次使用需允许麦克风。</p>
+            <button id="voice-enable" class="secondary" disabled>
+              启用语音
+            </button>
+            <p id="voice-status" class="hint">等待连接</p>
+            <div class="rule-note">
+              <span>记住</span>
+              <p>你的身份与书页只有自己可见。广播中的死因，不等于阵营证据。</p>
+            </div>
+            <div id="summary"></div>
+          </aside>
+        </div>
+      </section>
+    </main>
+    <footer>最后一班 · 可玩原型 <span>数值与搜索内容仍在试验</span></footer>
+    <dialog id="elimination-choice" class="elimination-choice">
+      <p class="eyebrow">本局结束</p>
+      <h2>你的旅程到此为止</h2>
+      <p>你可以留下观看后续对局，但不能操作、说话或收听语音。</p>
+      <button id="spectate">观战</button>
+      <button id="elimination-exit" class="secondary">退出并返回主页</button>
+    </dialog>
+    <dialog id="phase-transition" class="phase-transition">
+      <p class="eyebrow">阶段切换</p>
+      <h2 id="phase-transition-label"></h2>
+      <p id="phase-transition-timer"></p>
+    </dialog>
+    <dialog id="rules">
+      <button id="rules-close" class="quiet close">关闭</button>
+      <p class="eyebrow">乘车须知</p>
+      <h2>活着抵达，不是唯一目标。</h2>
+      <ul>
+        <li>6–8 人开局，共四轮。每人有秘密身份、职业与私人任务。</li>
+        <li>车长先选站，每人再自行选择留车或下车；车长必须留车并负责分粮。</li>
+        <li>搜索消耗行动点。按页面可用操作行动，点击完成后停止主动行动。</li>
+        <li>搜索结束才汇总感染、外部袭击与身体状态；及时查看自己的书页。</li>
+        <li>
+          血清累计第三针直接致死，不能用治疗抵消。潜伏者在终点的免费治疗另按规则处理。
+        </li>
+        <li>
+          会议公开讨论与投票。调查只能证明记录中的事实，不能直接证明阵营。
+        </li>
+        <li>武器袭击有十秒防守选择；出局后可选择观战或退出，观战不能操作、发言或使用语音。</li>
+        <li>断线不暂停，刷新可重连；资源耗尽可能让全车失败。</li>
+      </ul>
+      <p class="hint">
+        按钮与行动费用以服务器当前显示为准。此版本使用试验搜索内容
+        v0.2，尚未证明数值平衡。
+      </p>
+    </dialog>
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>

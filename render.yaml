@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: last-train-ming
+    runtime: node
+    plan: free
+    rootDir: last-train/app
+    buildCommand: npm ci --omit=dev
+    startCommand: npm start
+    autoDeployTrigger: off
+    healthCheckPath: /health
+    envVars:
+      - key: HOST
+        value: 0.0.0.0
+      - key: NODE_VERSION
+        value: 24.19.0
