@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { ROLES, createGame, act, tick, view } from "../src/game.mjs";
 
-test("captain chooses station first, then passengers independently choose two groups", () => {
+test("everyone votes for a station first, then passengers independently choose two groups", () => {
   const g = createGame({
     code: "GROUP",
     hostId: "p0",
@@ -16,7 +16,9 @@ test("captain chooses station first, then passengers independently choose two gr
   assert.ok(view(g, "p0").actions.some((a) => a.type === "chooseStation"));
   assert.ok(!view(g, "p1").actions.some((a) => a.type === "chooseGroup"));
   assert.ok(g.players.every((p) => p.records.every((r) => r.category !== "任务")));
-  act(g, "p0", { type: "chooseStation", station: "hospital", phaseId: g.phaseId }, 2);
+  g.stationVotes = {};
+  for (const voter of g.players.filter(p => p.alive && !p.left))
+    act(g, voter.id, { type: "chooseStation", station: "hospital", phaseId: g.phaseId }, 2);
   assert.equal(g.phase, "planning");
   assert.equal(view(g, "p1").station, "医院");
   assert.ok(!view(g, "p0").actions.some((a) => a.type === "chooseGroup"));
@@ -39,7 +41,9 @@ test("players who do not choose before the deadline remain aboard", () => {
   g.phase = "station";
   g.round = 1;
   for (const p of g.players) p.groupChoice = null;
-  act(g, "p0", { type: "chooseStation", station: "workshop", phaseId: g.phaseId }, 3);
+  g.stationVotes = {};
+  for (const voter of g.players.filter(p => p.alive && !p.left))
+    act(g, voter.id, { type: "chooseStation", station: "workshop", phaseId: g.phaseId }, 3);
   act(g, "p1", { type: "chooseGroup", group: "away", phaseId: g.phaseId }, 4);
   tick(g, g.deadline);
   assert.equal(g.phase, "search");
@@ -241,7 +245,9 @@ function game() {
   });
   act(g, "p0", { type: "start" }, 0);
   for (const p of g.players) act(g, p.id, { type: "vote", targetId: "p0" }, 1);
-  act(g, "p0", { type: "chooseStation", station: "hospital", phaseId: g.phaseId }, 2);
+  g.stationVotes = {};
+  for (const voter of g.players.filter(p => p.alive && !p.left))
+    act(g, voter.id, { type: "chooseStation", station: "hospital", phaseId: g.phaseId }, 2);
   for (const p of g.players.slice(1))
     act(g, p.id, { type: "chooseGroup", group: "train", phaseId: g.phaseId }, 2);
   g.players.forEach((p, i) => {
@@ -368,7 +374,9 @@ test("unpaid parts debt destroys train at next departure and overrides locks", (
   for (const p of g.players) p.groupChoice = null;
   g.resources.parts = 2;
   g.resources.fuel = 20;
-  act(g, "p0", { type: "chooseStation", station: "workshop", phaseId: g.phaseId }, 3);
+  g.stationVotes = {};
+  for (const voter of g.players.filter(p => p.alive && !p.left))
+    act(g, voter.id, { type: "chooseStation", station: "workshop", phaseId: g.phaseId }, 3);
   for (const p of g.players.slice(1))
     act(g, p.id, { type: "chooseGroup", group: "train", phaseId: g.phaseId }, 3);
   assert.equal(g.resources.debt, 4);
@@ -376,7 +384,9 @@ test("unpaid parts debt destroys train at next departure and overrides locks", (
   g.phase = "station";
   for (const p of g.players) p.groupChoice = null;
   g.resources.parts = 9;
-  act(g, "p0", { type: "chooseStation", station: "research", phaseId: g.phaseId }, 4);
+  g.stationVotes = {};
+  for (const voter of g.players.filter(p => p.alive && !p.left))
+    act(g, voter.id, { type: "chooseStation", station: "research", phaseId: g.phaseId }, 4);
   for (const p of g.players.slice(1))
     act(g, p.id, { type: "chooseGroup", group: "train", phaseId: g.phaseId }, 4);
   assert.equal(g.phase, "ended");

@@ -229,7 +229,9 @@ try {
         assert.equal(await host.locator('#page-action form[data-key="chat:0"]').count(), 0);
         checkedChatPage = true;
       }
-      await submit(host, "chooseStation");
+      for (const page of pages)
+        if ((await state(page)).actions.some(a => a.type === "chooseStation"))
+          await submit(page, "chooseStation");
       assert.match(await host.locator("#phase-transition-label").textContent(), /^Next stop:/);
     } else if (current.phase === "planning") {
       assert.ok(!current.actions.some((a) => a.type === "chooseStation"));

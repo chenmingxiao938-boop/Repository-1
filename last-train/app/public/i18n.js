@@ -1,4 +1,21 @@
 const pairs = [
+  ["使用补给道具（1点；口粮换1食物，其余换2资源）", "Use supplies (1 AP; ration: 1 food, other supplies: 2 resources)"],
+  ["返车安装装置（本轮剩余2点）", "Install after returning (2 remaining AP this round)"],
+  ["当前不能安装装置", "You cannot install a device in this phase."],
+  ...[2, 4].flatMap(amount => ["燃料", "零件", "食物"].map(resource => [
+    (amount === 4 ? "深入取得" : "取得") + amount + resource + (resource === "燃料" ? "，20%额外1份" : "，20%减少1份") + (amount === 4 ? "（2点）" : "（1点）"),
+    (amount === 4 ? "Deep search: " : "Find ") + amount + " " + ({燃料:"fuel",零件:"parts",食物:"food"}[resource]) + (resource === "燃料" ? "; 20% chance of +1" : "; 20% chance of -1") + (amount === 4 ? " (2 AP)" : " (1 AP)")
+  ])),
+  ["投票选择下一站（车长计两票）", "Vote for the next stop (captain counts twice)"],
+  ["车长决定下一站", "Captain: decide the next stop"],
+  ["选站平票，请重新投票。车长计两票。", "Station vote tied. Vote again; the captain counts twice."],
+  ["选站再次平票，等待车长决定下一站。", "Second tie: waiting for the captain to decide the next stop."],
+  ["全体投票选站，车长计两票；平票重投一次，再平票由车长决定。", "Everyone votes; the captain counts twice. A tie triggers one revote, then the captain decides if still tied."],
+  ["全体投票选站，车长计两票；每人自行选择留车或下车，车长必须留车并负责分粮。", "Everyone votes for the station; the captain counts twice. Choose to stay aboard or go outside. The captain stays aboard and allocates food."],
+  ["已经投过选站票", "You have already voted for a station."],
+  ["再次平票由车长决定", "After a second tie, only the captain may decide."],
+  ["当前不能投票选站", "Station voting is not available now."],
+
   ["最后一班", "Last Train"],
   ["联机试验 / 搜索 v0.2", "Online Preview / Search v0.2"],
   ["语言", "Language"],

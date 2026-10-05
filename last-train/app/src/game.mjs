@@ -36,20 +36,20 @@ const ITEMS = {
 const FACTIONS = { safe: "保全派", seal: "封锁派", infected: "感染阵营" };
 const STATIONS = [
   [
-    ["hospital", "医院", "parts", "key", 0.2],
-    ["signal", "铁路信号站", "fuel", "key", 0.02],
+    ["hospital", "医院", "parts", ["key", "device"], 0.2],
+    ["signal", "铁路信号站", "fuel", ["key", "device"], 0.02],
   ],
   [
-    ["workshop", "维修厂", "parts", "device", 0.02],
-    ["warehouse", "物流仓库", "fuel,food", "device", 0.02],
+    ["workshop", "维修厂", "parts", [], 0.02],
+    ["warehouse", "物流仓库", "fuel,food", [], 0.02],
   ],
   [
-    ["research", "研究室", "parts", "", 0.2],
-    ["school", "学校", "food", "", 0.02],
+    ["research", "研究室", "parts", ["key", "device"], 0.2],
+    ["school", "学校", "food", ["key", "device"], 0.02],
   ],
   [
-    ["isolation", "隔离中继站", "parts", "device", 0.02],
-    ["gas", "加油站", "fuel", "", 0.02],
+    ["isolation", "隔离中继站", "parts", [], 0.02],
+    ["gas", "加油站", "fuel", [], 0.02],
   ],
 ];
 const LABELS = {
@@ -310,6 +310,9 @@ function enter(g, s, n) {
   phase(g, s, n);
   if (s === "station") {
     g.station = null;
+    g.stationVotes = {};
+    g.stationRevote = false;
+    g.stationDecision = false;
     for (const p of alive(g)) p.groupChoice = null;
   }
   if (s === "planning") {
@@ -318,6 +321,26 @@ function enter(g, s, n) {
       p.group = p.groupChoice;
       p.done = p.groupChoice !== null;
     }
+  }
+}
+function closeStationVote(g, n) {
+  const stops = STATIONS[g.round];
+  const scores = stops.map(s => alive(g).reduce((sum, p) =>
+    sum + (g.stationVotes[p.id] === s[0] ? (p.id === g.captainId ? 2 : 1) : 0), 0));
+  if (scores[0] !== scores[1]) {
+    g.station = stops[scores[0] > scores[1] ? 0 : 1];
+    enter(g, "planning", n);
+    return;
+  }
+  g.stationVotes = {};
+  phase(g, "station", n);
+  if (!g.stationRevote) {
+    g.stationRevote = true;
+    log(g, "选站平票，请重新投票。车长计两票。");
+  } else {
+    g.stationDecision = true;
+    g.deadline = null;
+    log(g, "选站再次平票，等待车长决定下一站。");
   }
 }
 function startRound(g, n) {
@@ -358,7 +381,7 @@ function startRound(g, n) {
   const due = g.N + r.debt;
   r.debt = Math.max(0, due - r.parts);
   r.parts = Math.max(0, r.parts - due);
-  g.sourceTaken = false;
+  g.sourcesTaken = [];
   g.events = [];
   phase(g, "search", n);
   log(g, `第${g.round}轮：${g.station?.[1] ?? "留车调查"}`);
@@ -583,6 +606,10 @@ export function tick(g, n = Date.now()) {
     elect(g, n, g.phase);
     return;
   }
+  if (g.phase === "station" && !g.stationDecision && alive(g).every(p => Object.hasOwn(g.stationVotes, p.id))) {
+    closeStationVote(g, n);
+    return;
+  }
   if (
     ["tie", "planning", "search", "therapy", "discussion"].includes(g.phase) &&
     !g.emergencies.length &&
@@ -600,8 +627,7 @@ export function tick(g, n = Date.now()) {
       phase(g, "election", n);
       break;
     case "station":
-      g.station = null;
-      startRound(g, n);
+      if (!g.stationDecision) closeStationVote(g, n);
       break;
     case "planning":
       startRound(g, n);
@@ -628,8 +654,10 @@ export function tick(g, n = Date.now()) {
 function searchOptions(g, p) {
   const a = [{ value: "skip", label: "离开（0点）", cost: 0 }];
   if (p.node >= 5) return [];
-  const add = (value, label, cost, type, amount) =>
+  const add = (value, label, cost, type, amount) => {
+    if (amount) label += type === "fuel" ? "，20%额外1份" : "，20%减少1份";
     a.push({ value, label: label + `（${cost}点）`, cost, item: type, amount });
+  };
   if (p.group === "train") {
     if (p.node === 0) add("parts", "取得2零件", 1, "parts", 2);
     if (p.node === 1) {
@@ -661,8 +689,9 @@ function searchOptions(g, p) {
     if (p.node === 2 || (p.node === 4 && p.deep && !p.medUsed))
       add("medicine", "搜索药品", 1, p.medReward);
     if (p.node === 3) {
-      if (g.station?.[3] && !g.sourceTaken)
-        add("keyitem", "取得" + ITEMS[g.station[3]], 2, g.station[3]);
+      for (const type of g.station[3])
+        if (!g.sourcesTaken.includes(type))
+          add("keyitem_" + type, "取得" + ITEMS[type], 2, type);
       if (p.deep) add("toolkit", "取得工具包", 2, "toolkit");
     }
   }
@@ -891,12 +920,19 @@ export function act(g, id, a, n = Date.now()) {
     return;
   }
   if (a.type === "chooseStation") {
-    need(g.phase === "station" && id === g.captainId, "只有车长可选择站点");
+    need(g.phase === "station", "当前不能投票选站");
     need(a.phaseId === g.phaseId, "此阶段的选站请求已过期");
     const s = STATIONS[g.round].find((s) => s[0] === a.station);
     need(s, "站点无效");
-    g.station = s;
-    enter(g, "planning", n);
+    if (g.stationDecision) {
+      need(id === g.captainId, "再次平票由车长决定");
+      g.station = s;
+      enter(g, "planning", n);
+    } else {
+      need(!Object.hasOwn(g.stationVotes, id), "已经投过选站票");
+      g.stationVotes[id] = s[0];
+      if (alive(g).every(p => Object.hasOwn(g.stationVotes, p.id))) closeStationVote(g, n);
+    }
     return;
   }
   if (a.type === "allocate") {
@@ -1022,6 +1058,21 @@ export function act(g, id, a, n = Date.now()) {
     else if (t.status === "latent") t.status = "healthy";
     return;
   }
+  if (a.type === "install") {
+    const returned = g.phase === "therapy" && g.round === 3;
+    need(returned || g.phase === "search", "当前不能安装装置");
+    need(!p.done, "本阶段已经完成");
+    need(p.sealAbility && (returned || p.group === "train"), "需要封锁操作能力且留车");
+    need(!g.device && !g.sealComplete, "控制柜无法安装");
+    const x = p.bag.find((x) => x.type === "device");
+    need(x, "需要旁路装置");
+    pay(p, 2);
+    take(p, x.id);
+    g.device = { id: x.id, round: g.round };
+    g.devicePublic = false;
+    record(g, p, "设备操作", "安装旁路装置");
+    return;
+  }
   active(g, p);
   if (a.type === "search") {
     need(a.round === g.round && a.step === p.node, "此情景已处理，请刷新操作");
@@ -1038,13 +1089,14 @@ export function act(g, id, a, n = Date.now()) {
     pay(p, option.cost);
     p.node++;
     if (a.choice.startsWith("deep")) p.deep = true;
-    if (a.choice === "keyitem") g.sourceTaken = true;
+    if (a.choice.startsWith("keyitem_")) g.sourcesTaken.push(option.item);
     if (a.choice === "medicine") p.medUsed = true;
     if (t) investigate(g, p, t, a.choice === "deepRoom", a, n);
     else if (a.choice === "inspect") inspect(g, p);
     else if (option.item) {
       if (option.amount) {
         let count = option.amount;
+        if (g.rng() < 0.2) count += option.item === "fuel" ? 1 : -1;
         if (
           option.item === "parts" &&
           p.role === "engineer" &&
@@ -1057,7 +1109,7 @@ export function act(g, id, a, n = Date.now()) {
         p.counts[option.item] += count;
       } else gain(g, p, option.item, n);
       record(g, p, "搜索", "完成物资搜索");
-      if (a.choice !== "keyitem" && g.rng() < 0.1) {
+      if (!a.choice.startsWith("keyitem_") && g.rng() < 0.1) {
         const r = g.rng();
         gain(g, p, r < 0.6 ? "club" : r < 0.9 ? "knife" : "gun", n);
       }
@@ -1088,7 +1140,7 @@ export function act(g, id, a, n = Date.now()) {
     take(p, x.id);
     g.resources[
       { toolkit: "parts", ration: "food", fuelcan: "fuel" }[x.type]
-    ] += 2;
+    ] += x.type === "ration" ? 1 : 2;
     record(g, p, "维修", "使用" + x.label);
     return;
   }
@@ -1124,18 +1176,6 @@ export function act(g, id, a, n = Date.now()) {
     need(!p.roundUsed.inspectControl, "本轮已经检查过控制柜");
     pay(p, 1);
     inspect(g, p);
-    return;
-  }
-  if (a.type === "install") {
-    need(p.sealAbility && p.group === "train", "需要封锁操作能力且留车");
-    need(!g.device && !g.sealComplete, "控制柜无法安装");
-    const x = p.bag.find((x) => x.type === "device");
-    need(x, "需要旁路装置");
-    pay(p, 2);
-    take(p, x.id);
-    g.device = { id: x.id, round: g.round };
-    g.devicePublic = false;
-    record(g, p, "设备操作", "安装旁路装置");
     return;
   }
   if (a.type === "activate") {
@@ -1188,8 +1228,7 @@ export function act(g, id, a, n = Date.now()) {
       note(
         p,
         "预览：" +
-          (o.item ? (ITEMS[o.item] ?? o.item) : o.label) +
-          (o.amount ? " " + o.amount : ""),
+          (o.amount ? o.label : o.item ? (ITEMS[o.item] ?? o.item) : o.label),
       );
       return;
     }
@@ -1354,8 +1393,8 @@ export function view(g, id) {
           ]),
         ],
       );
-    if (g.phase === "station" && id === g.captainId) {
-      add("chooseStation", "选择下一站", [
+    if (g.phase === "station" && (g.stationDecision ? id === g.captainId : !Object.hasOwn(g.stationVotes, id))) {
+      add("chooseStation", g.stationDecision ? "车长决定下一站" : "投票选择下一站（车长计两票）", [
         field(
           "station",
           "站点",
@@ -1408,6 +1447,8 @@ export function view(g, id) {
         itemField(["club", "knife", "gun"]),
       ]);
     if (!p.busy) {
+      if (g.phase === "therapy" && g.round === 3 && p.sealAbility && !p.done)
+        add("install", "返车安装装置（本轮剩余2点）");
       if (
         p.pending.length &&
         (p.bag.length < 6 || p.pending.some((x) => Number.isFinite(x.expires)))
@@ -1488,7 +1529,7 @@ export function view(g, id) {
       )
         add("infect", "秘密感染（1点；同组，不反馈目标身份）", [targetField()]);
       if (bag(["toolkit", "ration", "fuelcan"]).length)
-        add("use", "使用补给道具（1点，换2公共资源）", [
+        add("use", "使用补给道具（1点；口粮换1食物，其余换2资源）", [
           itemField(["toolkit", "ration", "fuelcan"]),
         ]);
       if (bag(["club", "knife", "gun"]).length)
@@ -1556,7 +1597,7 @@ export function view(g, id) {
     bystander: "每次感染25%免疫，整局最多成功一次。",
   };
   const hints = {
-    station: "车长先选下一站；选好后每位乘客自行决定留车或下车。",
+    station: g.stationDecision ? "选站再次平票，等待车长决定下一站。" : "全体投票选站，车长计两票；平票重投一次，再平票由车长决定。",
     planning: "每位乘客自行选择留车或下车；车长必须留车。单人外出有80%概率遭遇外部感染者。",
     search:
       "每人五个情景，收益进公共库存。完成五题后仍可使用技能；点击完成则停止主动行动。",
